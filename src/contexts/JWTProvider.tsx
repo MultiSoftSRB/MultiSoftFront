@@ -17,14 +17,12 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axios";
 import { AxiosResponse } from "../types/axiosResponse";
 import { Firm, LicenseType } from "../types/firm";
-import {API_URL} from "../../src/types/auth"
+import { API_URL } from "../../src/types/auth";
 
 const INITIALIZE = "INITIALIZE";
 const SIGN_IN = "SIGN_IN";
 const SIGN_OUT = "SIGN_OUT";
 const SIGN_UP = "SIGN_UP";
-
-
 
 type AuthActionTypes = {
   [INITIALIZE]: {
@@ -94,7 +92,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
         if (accessToken) {
           setSession(accessToken);
 
-          const userResponse = await axiosInstance.get(`${API_URL}/aut/me`);
+          const userResponse = await axiosInstance.get(`${API_URL}/auth/me`);
           let user: AuthUser = userResponse.data;
           if (user !== null) {
             dispatch({
@@ -150,10 +148,13 @@ function AuthProvider({ children }: { children: ReactNode }) {
   //superadmin
   const signInSA = async (username: string, password: string) => {
     try {
-      const response = await axiosInstance.post(`${API_URL}/auth/login-superadmin`, {
-        username,
-        password,
-      });
+      const response = await axiosInstance.post(
+        `${API_URL}/auth/login-superadmin`,
+        {
+          username,
+          password,
+        }
+      );
 
       const data: AuthResponse = response.data;
       const accessToken = data.accessToken;
