@@ -33,6 +33,7 @@ const SignUp = () => {
         lastName: "",
         email: "",
         password: "",
+        confirmPassword: "",
         submit: false,
         companyName: "",
         companyCode: "",
@@ -61,6 +62,9 @@ const SignUp = () => {
             /[^a-zA-Z0-9]/,
             "Password must contain at least one special character"
           ),
+        confirmPassword: Yup.string()
+          .required("Please confirm your password")
+          .oneOf([Yup.ref("password")], "Passwords must match"), //
         companyName: Yup.string().required("Required").max(100),
         companyCode: Yup.string().required("Required"),
         companyType: Yup.number().required("Required"),
@@ -175,6 +179,27 @@ const SignUp = () => {
               {!!touched.password && (
                 <Form.Control.Feedback type="invalid">
                   {errors.password}
+                </Form.Control.Feedback>
+              )}
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>{t("ConfirmPassword")}</Form.Label>
+              <Form.Control
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm password"
+                value={values.confirmPassword}
+                isInvalid={Boolean(
+                  touched.confirmPassword && errors.confirmPassword
+                )}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                onPaste={(e) => e.preventDefault()}
+                onCopy={(e) => e.preventDefault()}
+              />
+              {!!touched.confirmPassword && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.confirmPassword}
                 </Form.Control.Feedback>
               )}
             </Form.Group>
