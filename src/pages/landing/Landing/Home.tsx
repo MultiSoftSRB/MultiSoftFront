@@ -25,9 +25,10 @@ const Home = () => {
 
   const items = useDashboardItems();
 
-  const { signIn, user, isInitialized } = useAuth();
+  const { signIn, user, isInitialized, signOut } = useAuth();
   const { selectedFirm, handleSelectedFirm } = useFirm();
   const [firms, setFirms] = useState<Firm[]>([]);
+  const [show, setShow] = useState<boolean>(false);
   //
   useEffect(() => {
     if (user && !selectedFirm) {
@@ -36,9 +37,17 @@ const Home = () => {
     }
   }, [user]);
 
+  const handleModalCancel = () => {
+    console.log("cancel");
+    setShow(false);
+    signOut();
+  };
+
   if (user && !selectedFirm && user.userType !== 1) {
     console.log(selectedFirm);
-    return <FirmSelection firms={firms} show={true} />;
+    return (
+      <FirmSelection firms={firms} show={show} onCancel={handleModalCancel} />
+    );
   }
 
   return (

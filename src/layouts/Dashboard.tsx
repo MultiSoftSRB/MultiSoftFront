@@ -22,13 +22,15 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ children }) => {
   const items = useDashboardItems();
-  const { signIn, user, isInitialized } = useAuth();
+  const { signIn, user, isInitialized, signOut } = useAuth();
   const { selectedFirm, handleSelectedFirm } = useFirm();
   const [firms, setFirms] = useState<Firm[]>([]);
+  const [show, setShow] = useState<boolean>(false);
   //
   useEffect(() => {
     if (user && !selectedFirm) {
       setFirms(user.userCompanies);
+      setShow(true);
       console.log("user", user);
     }
   }, [user]);
@@ -39,10 +41,17 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
   //     console.log("Auto-selected firm:", firms[0]);
   //   }
   // }, [firms, selectedFirm]);
+  const handleModalCancel = () => {
+    console.log("cancel");
+    setShow(false);
+    signOut();
+  };
 
   if (user && !selectedFirm && user.userType != 1) {
     console.log(selectedFirm);
-    return <FirmSelection firms={firms} show={true} />;
+    return (
+      <FirmSelection firms={firms} show={show} onCancel={handleModalCancel} />
+    );
   }
 
   return (

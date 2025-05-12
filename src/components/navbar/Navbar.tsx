@@ -81,41 +81,52 @@ const NavbarComponent = () => {
               </InputGroup>
             </Form>
             <Warehouse className="lucide" />
-            <Form className="" id="firmSwitch">
-              <InputGroup className="input-group-navbar">
-                <Form.Control
-                  as="select"
-                  name="companyType"
-                  placeholder="Select Company"
-                  value={selectedFirm?.id ?? "None"}
-                  className={showFirmWarning ? "is-invalid" : ""}
-                  onChange={(e) => {
-                    const selectedFirmId = Number(e.target.value);
-                    const firm = user.userCompanies.find(
-                      (c) => c.id === selectedFirmId
-                    );
-                    if (firm) {
-                      handleSelectedFirm(firm, true);
-                      setShowFirmWarning(false);
-                    }
+            <div className="position-relative me-3">
+              <Form className="" id="firmSwitch">
+                <InputGroup className="input-group-navbar">
+                  <Form.Control
+                    as="select"
+                    name="companyType"
+                    placeholder="Select Company"
+                    value={selectedFirm?.id ?? "None"}
+                    className={showFirmWarning ? "is-invalid" : ""}
+                    onChange={(e) => {
+                      const selectedFirmId = Number(e.target.value);
+                      const firm = user.userCompanies.find(
+                        (c) => c.id === selectedFirmId
+                      );
+                      if (firm) {
+                        handleSelectedFirm(firm, true);
+                        setShowFirmWarning(false);
+                      }
+                    }}
+                  >
+                    <option value="" disabled>
+                      -- Select Firm --
+                    </option>
+                    {user.userCompanies.map((company) => (
+                      <option key={company.id} value={company.id}>
+                        {company.name}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </InputGroup>
+              </Form>
+              {showFirmWarning && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "94%",
+                    left: 0,
+                    fontSize: "0.75rem",
+                    color: "#dc3545",
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  <option value="" disabled>
-                    -- Select Firm --
-                  </option>
-                  {user.userCompanies.map((company) => (
-                    <option key={company.id} value={company.id}>
-                      {company.name}
-                    </option>
-                  ))}
-                </Form.Control>
-              </InputGroup>
-            </Form>
-            {showFirmWarning && (
-              <div className="invalid-feedback d-block">
-                Please select a firm to proceed.
-              </div>
-            )}
+                  Company not selected
+                </div>
+              )}
+            </div>
           </>
         )}
 
