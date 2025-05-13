@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Formik, Field } from "formik";
 import { Button, Tab, Table, Form, Alert } from "react-bootstrap";
 import axiosInstance from "../../../utils/axios";
@@ -6,11 +6,14 @@ import { AuthUser } from "../../../types/auth";
 import { Firm } from "../../../types/firm";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
+import useAuth from "../../../hooks/useAuth";
+import { useFirm } from "../../../hooks/useFirm";
 
 const UserRoleForm = () => {
   const [showForm, setShowForm] = useState(false);
   const [usersFromFirm, setUsersFromFirm] = useState<AuthUser[]>();
   const [firms, setFirms] = useState<Firm[]>();
+  const { selectedFirm, handleSelectedFirm } = useFirm();
   const { t } = useTranslation();
   const [roles, setRoles] = useState<
     { id: number; name: string; description: string }[]
@@ -30,6 +33,7 @@ const UserRoleForm = () => {
 
   const fetchUsers = async () => {
     try {
+      console.log("fetchign users");
       const response = await axiosInstance.get("/auth/users");
       let users: AuthUser[] = response.data;
       setUsersFromFirm(users);
@@ -41,6 +45,7 @@ const UserRoleForm = () => {
 
   const fetchRoles = async () => {
     try {
+      console.log("fetchign roles");
       const response = await axiosInstance.get("/auth/roles");
       setRoles(response.data);
     } catch (error) {
@@ -50,9 +55,18 @@ const UserRoleForm = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
-    fetchRoles();
-  }, []);
+    if (!selectedFirm?.id) return;
+
+    const fetchData = async () => {
+      console.log(
+        "Firm updated, fetching users and roles for:",
+        selectedFirm.name
+      );
+      await fetchUsers();
+      await fetchRoles();
+    };
+    fetchData();
+  }, [selectedFirm?.id]);
 
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Required").max(100),

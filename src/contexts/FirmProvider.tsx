@@ -19,6 +19,8 @@ const FirmProvider = ({ children }: { children: React.ReactNode }) => {
     firm: Firm | null,
     apiCall: boolean = false
   ) => {
+    let currentFirm = localStorage.getItem("selectedFirm");
+    if (currentFirm != null) localStorage.removeItem("selectedFirm");
     setSelectedFirm(firm);
     localStorage.setItem("selectedFirm", JSON.stringify(firm));
 
